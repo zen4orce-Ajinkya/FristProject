@@ -1,0 +1,104 @@
+<apex:page controller="QueryBuilder">
+<head>
+  <title>Bootstrap Example</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+    <apex:form id="form" >
+        <apex:pageBlock >
+            <apex:pageMessages id="showmsg"></apex:pageMessages>
+       Select Object:  <apex:selectList value="{!choosenObject}"  label="Select Object" size="1" id="obj" >
+                       <apex:selectoptions value="{!allObjects}"  />
+                       <apex:actionSupport event="onchange" action="{!getListOfFields}" reRender="f"/>
+                       </apex:selectList>
+                    
+        
+      
+  <div class="row">
+  <div class="col-sm-1">			
+  </div>
+    
+  <div class="col-sm-3" >
+
+<table >
+   	<tr>
+          <td> 
+              Select Fields:
+             <apex:outputPanel id="f">
+                   <apex:selectList value="{!fieldsss}" multiselect="true" size="5" rendered="true" style="width:300px">
+                                 <apex:selectoptions value="{!fieldNames}"  />
+                                 </apex:selectList>
+             </apex:outputPanel>
+          
+         </td>
+         <td>
+             <apex:commandButton value=">>" action="{!add}" reRender="out,String,f,Bid"/>
+             <apex:commandButton value="<<" action="{!remove}" reRender="out,String,f,Bid"/>
+         </td>
+         <td>
+           
+           You have selected:
+             <apex:outputPanel id="out">
+                        <apex:selectList value="{!deSelectedfieldsss}" size="5" multiselect="true" rendered="true" style="width:300px"> 
+                        <apex:selectoptions value="{!selectedFields}"  />
+                        </apex:selectList>
+            </apex:outputPanel> 
+               
+               
+          
+         </td>
+  </tr>
+  
+</table>
+    </div>
+  	<div class="col-sm-8">
+    </div>
+</div>
+
+        <apex:selectRadio value="{!selectedRadio}" >
+             <apex:actionSupport event="onclick"  action="{!add}"/>
+            <apex:selectOptions value="{!RadioValues}"/>
+        </apex:selectRadio>
+       
+       
+        
+          Maximum # Records To Display 
+         <apex:selectList value="{!Limits}" multiselect="false" onclick="updateQuery">
+             <apex:actionSupport event="onchange" action="{!add}"/>
+         <apex:selectoptions value="{!REcordsToDispaly}"  />
+         </apex:selectList>
+        
+        <br/>
+        
+        
+        <apex:commandButton value="Execute Query" action="{!ExecuteQuery}" id="Bid"  disabled="{!disabled}" oncomplete="myfun();" reRender="table"/>
+       <apex:actionFunction name="myfun" action="{!clear}" />
+       <br/>
+        
+        <apex:inputTextarea value="{!strQuery}" label="SOQL QUERY" id="String" style="width:50%;"/>
+ </apex:pageBlock>
+        
+        <apex:pageBlock title="My Content" id="table" >
+             <apex:pageMessages id="showmsg"></apex:pageMessages>
+    <apex:pageBlockTable value="{!s}" var="sobj"  >
+        	<apex:repeat value="{!tableFields}" var="field">
+				<!--	<apex:column value="{!sobj[field]}"/> -->
+                	<apex:column >
+                            <apex:outputLink value="/{!sobj['id']}">{!sobj[field]}</apex:outputLink>
+              		</apex:column>
+				</apex:repeat> 
+           
+    </apex:pageBlockTable>
+    </apex:pageBlock>
+
+        
+</apex:form>
+    
+    
+    
+       
+</apex:page>
